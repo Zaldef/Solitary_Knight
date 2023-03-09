@@ -248,3 +248,10 @@
 1678375237 c:\users\22899140\desktop\teste\allegro-5.0.10-mingw-4.7.0\include\allegro5\allegro_native_dialog.h
 	"allegro5/allegro.h"
 
+1678375875 source:c:\users\22899140\documents\github\solitarykinight\retasencadeadas5.c
+	<stdio.h>
+	<stdlib.h>
+	<time.h>
+	<allegro5/allegro.h>
+	<allegro5/allegro_primitives.h>
+
