@@ -1,0 +1,4 @@
+Buiild options
+	-Teste, search directories, add pasta include
+	-Debug, Linker settings, add liballegro_font-5.0.10-static-mt-debug
+	- release, Linker settings, add allegro-5.0.10-mingw-4.7.0\lib\liballegro-5.0.10-monolith-mt.a;
