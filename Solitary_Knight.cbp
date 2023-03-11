@@ -2,21 +2,24 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="Teste" />
+		<Option title="Solitary_Knight" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debug">
-				<Option output="bin/Debug/Teste" prefix_auto="1" extension_auto="1" />
+				<Option output="bin/Debug/Solitary_Knight" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-g" />
 				</Compiler>
+				<Linker>
+					<Add library="allegro-5.0.10-mingw-4.7.0/lib/liballegro-5.0.10-monolith-static-mt-debug.a" />
+				</Linker>
 			</Target>
 			<Target title="Release">
-				<Option output="bin/Release/Teste" prefix_auto="1" extension_auto="1" />
+				<Option output="bin/Release/Solitary_Knight" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Release/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -25,11 +28,13 @@
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
+					<Add library="allegro-5.0.10-mingw-4.7.0/lib/liballegro-5.0.10-monolith-mt.a" />
 				</Linker>
 			</Target>
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
+			<Add directory="allegro-5.0.10-mingw-4.7.0/include" />
 		</Compiler>
 		<Extensions>
 			<lib_finder disable_auto="1" />
