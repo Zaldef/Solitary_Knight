@@ -1,0 +1,3 @@
+copie as pastas de dependencia para o disco local(C);
+
+para compilar abra o diretorio da pasta no pronpt e digite o coamnfo (make)
