@@ -10,6 +10,9 @@
  int TELA_ALTURA = 480;
  int TELA_LARGURA = 480;
 
+  int mapa=1;
+ 
+
 int main (){
 
   al_init();
@@ -24,6 +27,7 @@ int main (){
   ALLEGRO_TIMER* timer = al_create_timer(1.0 / 60.0);
   ALLEGRO_BITMAP * bolinha = al_load_bitmap("./images/personagem4.png");
   ALLEGRO_BITMAP * villa = al_load_bitmap("./images/villa2.png");
+   ALLEGRO_BITMAP * villa2 = al_load_bitmap("./images/villa3.1.png");
   
 
 
@@ -39,46 +43,14 @@ int main (){
   int xcubo =100;
   int ycubo =150;
 
+  
+
   while(true){
+   
     ALLEGRO_EVENT event;
     al_wait_for_event(event_queue, &event);
 
-    
-////////////////////////COLOÇÃO COM O CUBO//////////////////////////////////////
-    if(ybolinha + 39 == ycubo && xbolinha >= 60 && xbolinha <= 245) {
-      ybolinha -=1;
-    }
-    if(xbolinha +39  == xcubo && ybolinha >= 110 && ybolinha <= 295) {
-      xbolinha -=1;
-    }
-
-    if(ybolinha + 39 == ycubo + 180 && xbolinha >= 60 && xbolinha <= 245 ) {
-      ybolinha +=1;
-    }
-
-    if(xbolinha +39  == xcubo +180 && ybolinha >= 110 && ybolinha <= 295) {
-      xbolinha +=1;
-    }
-////////////////////////COLiÇÃO COM O CUBO//////////////////////////////////////
-
-    if(ybolinha < 0 ) {
-      ybolinha +=1;
-    }
-    if(xbolinha +39  == xcubo && ybolinha >= 110 && ybolinha <= 295) {
-      xbolinha -=1;
-    }
-
-    if(ybolinha + 39 == ycubo + 180 && xbolinha >= 60 && xbolinha <= 245 ) {
-      ybolinha +=1;
-    }
-
-    if(xbolinha +39  == xcubo +180 && ybolinha >= 110 && ybolinha <= 295) {
-      xbolinha +=1;
-    }
-
-
-
-    
+     
 ////////////////////////CONTROLES//////////////////////////////////////////////
     if( event.type == ALLEGRO_EVENT_DISPLAY_CLOSE ){
       break;
@@ -101,33 +73,88 @@ int main (){
     }
 ////////////////////////CONTROLES//////////////////////////////////////////////
 
+ 
+////////////////////////LIMITES DA TELA//////////////////////////////////////
 
-////////////////////////EXIBIR CORDENADAS//////////////////////////////////////////////
+    if(ybolinha < 0 ) {
+    ybolinha +=1;
+    }
+    if(xbolinha < 0 ) {
+    ybolinha +=1;
+    }
+    if(ybolinha >TELA_ALTURA  ) {
+    ybolinha -=1;
+    }
+    if(xbolinha >TELA_LARGURA  ) {
+    xbolinha -=1;
+    }
+////////////////////////LIMITES DA TELA//////////////////////////////////////
+
+
+
+    
+
+    if(mapa=2)
+    {
+    al_clear_to_color(al_map_rgb(255,255,255));
+    al_draw_bitmap(villa, 0, 0, 0);
+    al_draw_bitmap(bolinha, xbolinha, ybolinha, 0);
+     
+     }
+       if(mapa=1)
+    {
+      
+    al_clear_to_color(al_map_rgb(255,255,255));
+    al_draw_bitmap(villa2, 0, 0, 0);
+    al_draw_bitmap(bolinha, xbolinha, ybolinha, 0);
+
+    //colissão
+    if (ybolinha <440 &&ybolinha>315&&xbolinha>10&&xbolinha<325)
+    
+    {
+      ybolinha +=1;
+    }
+
+    if (ybolinha <190 &&ybolinha>10&&xbolinha<355)
+    
+    {
+      xbolinha +=1;
+    }
+
+    if (xbolinha <10 &&ybolinha<0 &&ybolinha>60 )
+    
+    {
+      xbolinha -=1;
+    }
+    
+    }
+    
+    
+   
+
+
+    ////////////////////////EXIBIR CORDENADAS//////////////////////////////////////////////   
     char xbposicao[50];
     char ybposicao[50];
+     char nmapa[50];
+        sprintf(nmapa, "mapa: é %d", mapa);
         sprintf(xbposicao, "xbolinha: é %d", xbolinha);
         sprintf(ybposicao, "ybolinha: é %d", ybolinha);
     char xcposicao[50];
     char ycposicao[50];
         sprintf(xcposicao, "xcubo: é %d", xcubo);
         sprintf(ycposicao, "ycubo: é %d", ycubo);
-////////////////////////EXIBIR CORDENADAS//////////////////////////////////////////////       
 
-    
-    
-
-    al_clear_to_color(al_map_rgb(255,255,255));
-    al_draw_bitmap(villa, 0, 0, 0);
-    al_draw_bitmap(bolinha, xbolinha, ybolinha, 0);
-    
-     
-
-////////////////////////EXIBIR CORDENADAS//////////////////////////////////////////////   
      al_draw_text(font, al_map_rgb(0, 0, 0), 0, 10, 0, xbposicao);
      al_draw_text(font, al_map_rgb(0, 0, 0), 0, 20, 0, ybposicao);
      al_draw_text(font, al_map_rgb(0, 0, 0), 0, 30, 0, xcposicao);
      al_draw_text(font, al_map_rgb(0, 0, 0), 0, 40, 0, ycposicao);
+     al_draw_text(font, al_map_rgb(0, 0, 0), 0, 50, 0, nmapa);
  ////////////////////////EXIBIR CORDENADAS//////////////////////////////////////////////    
+    
+     
+
+
  
     al_flip_display();
    
@@ -141,5 +168,6 @@ int main (){
 
   return 0;
 }
+
 
 
