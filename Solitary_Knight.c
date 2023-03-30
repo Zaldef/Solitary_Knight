@@ -20,8 +20,8 @@ int main() {
   ALLEGRO_DISPLAY *display = al_create_display(TELA_LARGURA, TELA_ALTURA);
   al_set_window_position(display, 200, 200);
   ALLEGRO_FONT *font = al_create_builtin_font();
-  ALLEGRO_TIMER *timer = al_create_timer(1.0 / 60.0);
-  ALLEGRO_BITMAP *knight = al_load_bitmap("./images/Chars/char1.png");
+  ALLEGRO_TIMER *timer = al_create_timer(1.0 / 30.0);
+  ALLEGRO_BITMAP *knight = al_load_bitmap("./images/Chars/actor9.png");
   ALLEGRO_BITMAP *villa = al_load_bitmap("./images/Mapas/villa2.png");
   ALLEGRO_BITMAP *villa2 = al_load_bitmap("./images/Mapas/villa3.1.png");
   
@@ -32,11 +32,9 @@ int main() {
   al_register_event_source(event_queue, al_get_timer_event_source(timer));
   al_start_timer(timer);
 
-  int xknight = 0;
-  int yknight = 0;
-
-  int xcubo = 100;
-  int ycubo = 150;
+  int xknight = 0, yknight = 0;
+  float frame = 0.f;
+  int current_frame_y = 0;
 
   while (true) {
 
@@ -46,19 +44,25 @@ int main() {
 
     if (event.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
       break;
-    }
-    if (event.keyboard.keycode == ALLEGRO_KEY_D) {
-      xknight += 1;
-    }
-    if (event.keyboard.keycode == ALLEGRO_KEY_A) {
+    }else if( event.keyboard.keycode == ALLEGRO_KEY_S ){
+      current_frame_y = 32 * 0;
+      yknight += 1;
+    }else if( event.keyboard.keycode == ALLEGRO_KEY_A ){
+      current_frame_y = 32 * 1;
       xknight -= 1;
-    }
-    if (event.keyboard.keycode == ALLEGRO_KEY_W) {
+    }else if( event.keyboard.keycode == ALLEGRO_KEY_D ){
+      current_frame_y = 32 * 2;
+       xknight += 1;
+    }else if( event.keyboard.keycode == ALLEGRO_KEY_W ){
+      current_frame_y = 32 * 3;
       yknight -= 1;
     }
-    if (event.keyboard.keycode == ALLEGRO_KEY_S) {
-      yknight += 1;
+
+    frame += 0.3f;
+    if( frame > 3){
+      frame -= 3;
     }
+    
     ////////////////////////CONTROLES//////////////////////////////////////////////
 
     if (yknight < 0) {
@@ -67,24 +71,18 @@ int main() {
     if (xknight < 0) {
       yknight += 1;
     }
-    if (yknight > TELA_ALTURA) {
+    if (yknight > TELA_ALTURA-32) {
       yknight -= 1;
     }
-    if (xknight > TELA_LARGURA) {
+    if (xknight > TELA_LARGURA-32) {
       xknight -= 1;
     }
     ////////////////////////LIMITES DA TELA//////////////////////////////////////
 
-    if (mapa = 2) {
-      al_clear_to_color(al_map_rgb(255, 255, 255));
-      al_draw_bitmap(villa, 0, 0, 0);
-      al_draw_bitmap(knight, xknight, yknight, 0);
-    }
-
     if (mapa = 1) {
-      al_clear_to_color(al_map_rgb(255, 255, 255));
+      //al_clear_to_color(al_map_rgb(255, 255, 255));
       al_draw_bitmap(villa2, 0, 0, 0);
-      al_draw_bitmap(knight, xknight, yknight, 0);
+      al_draw_bitmap_region(knight, 32 * (int)frame,current_frame_y,32,32,xknight,yknight,0);
       if (yknight < 440 && yknight > 315 && xknight > 10 && xknight < 325){
         yknight += 1;
       }
@@ -104,16 +102,10 @@ int main() {
     sprintf(nmapa, "mapa: é %d", mapa);
     sprintf(xbposicao, "xknight: é %d", xknight);
     sprintf(ybposicao, "yknight: é %d", yknight);
-    char xcposicao[50];
-    char ycposicao[50];
-    sprintf(xcposicao, "xcubo: é %d", xcubo);
-    sprintf(ycposicao, "ycubo: é %d", ycubo);
 
     al_draw_text(font, al_map_rgb(0, 0, 0), 0, 10, 0, xbposicao);
     al_draw_text(font, al_map_rgb(0, 0, 0), 0, 20, 0, ybposicao);
-    al_draw_text(font, al_map_rgb(0, 0, 0), 0, 30, 0, xcposicao);
-    al_draw_text(font, al_map_rgb(0, 0, 0), 0, 40, 0, ycposicao);
-    al_draw_text(font, al_map_rgb(0, 0, 0), 0, 50, 0, nmapa);
+    al_draw_text(font, al_map_rgb(0, 0, 0), 0, 30, 0, nmapa);
     al_flip_display();
     ////////////////////////EXIBIR CORDENADAS//////////////////////////////////////////////
   }
