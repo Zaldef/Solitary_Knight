@@ -1,11 +1,11 @@
-TARGET=jogo.exe
+TARGET=Solitary_Knight.exe
 CC=gcc
 ALLEGRO=C:\allegro\include
 STATIC=liballegro_monolith.dll.a
 LD=gcc
-OBJS=jogo.o
+OBJS=Solitary_Knight.o
 all: $(OBJS)
 	$(LD) -I $(ALLEGRO) -o $(TARGET) $(OBJS)  $(STATIC)
 	$(TARGET)
-jogo.o: jogo.c
-	$(CC) -I $(ALLEGRO) -c jogo.c -o jogo.o
+Solitary_Knight.o: Solitary_Knight.c
+	$(CC) -I $(ALLEGRO) -c Solitary_Knight.c -o Solitary_Knight.o
