@@ -6,12 +6,10 @@
 #include <allegro5/allegro_ttf.h> // Renderizar fontes
 #include <allegro5/keyboard.h> // Teclado
 #include <stdio.h>
-int TELA_ALTURA = 640;
-int TELA_LARGURA = 640;
-int mapa_X = 2560;
-int mapa_Y = 2560;
 
 int main() {
+  int TELA_ALTURA = 640;
+  int TELA_LARGURA = 640;
 
   al_init();
   al_init_font_addon();
@@ -32,12 +30,14 @@ int main() {
   al_register_event_source(event_queue, al_get_timer_event_source(timer));
   al_start_timer(timer);
   
-  int xknight = 0, yknight = 0;
-  int tamanho_xk = 32, tamanho_yk = 32;
-  int deslocamento = 32; 
-  int xmapa = 0, ymapa = 0;
+  int xknight = 0, yknight = 0; //posição do cavaleiro
+  int tamanho_xk = 32, tamanho_yk = 32; //tamanho do sprite
+  int deslocamento = 32; // velocidade 
+  int xmapa = 0, ymapa = 0; // posição do map
   float frame = 0.f;
   int current_frame_y = 0;
+  int mapa_X = -2560;
+  int mapa_Y = -2560;
 
   while (true) {
 
@@ -68,22 +68,24 @@ int main() {
     
     ////////////////////////CONTROLES//////////////////////////////////////////////
 
-    if (yknight < 0) {
-      ymapa += +TELA_ALTURA;
+    if (yknight < 0 && ymapa < 0) {
+      ymapa += TELA_ALTURA;
       yknight += TELA_ALTURA;
     }
-    if (xknight < 0) {
-      xmapa += +TELA_LARGURA;
+    if (xknight < 0 && xmapa < 0) {
+      xmapa += TELA_LARGURA;
       xknight += TELA_LARGURA;
     }
-    if (yknight > TELA_ALTURA-tamanho_yk){
+    if (yknight > TELA_ALTURA-tamanho_yk && ymapa > mapa_Y+TELA_ALTURA){
       ymapa -= TELA_ALTURA;
       yknight = 0;
     }
-    if (xknight > TELA_LARGURA-tamanho_xk){
+    if (xknight > TELA_LARGURA-tamanho_xk && xmapa > mapa_X+TELA_LARGURA){
       xmapa -= TELA_LARGURA;
       xknight = 0;
     }
+
+
     ////////////////////////LIMITES DA TELA & TROCA DE MAPA//////////////////////////////////////
 
       al_draw_bitmap(mapa, xmapa, ymapa, 0);
