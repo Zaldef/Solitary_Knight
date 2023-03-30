@@ -21,9 +21,10 @@ int main() {
   al_set_window_position(display, 200, 200);
   ALLEGRO_FONT *font = al_create_builtin_font();
   ALLEGRO_TIMER *timer = al_create_timer(1.0 / 60.0);
-  ALLEGRO_BITMAP *bolinha = al_load_bitmap("./images/Chars/personagem4.png");
+  ALLEGRO_BITMAP *knight = al_load_bitmap("./images/Chars/char1.png");
   ALLEGRO_BITMAP *villa = al_load_bitmap("./images/Mapas/villa2.png");
   ALLEGRO_BITMAP *villa2 = al_load_bitmap("./images/Mapas/villa3.1.png");
+  
 
   ALLEGRO_EVENT_QUEUE *event_queue = al_create_event_queue();
   al_register_event_source(event_queue, al_get_display_event_source(display));
@@ -31,8 +32,8 @@ int main() {
   al_register_event_source(event_queue, al_get_timer_event_source(timer));
   al_start_timer(timer);
 
-  int xbolinha = 0;
-  int ybolinha = 0;
+  int xknight = 0;
+  int yknight = 0;
 
   int xcubo = 100;
   int ycubo = 150;
@@ -47,51 +48,51 @@ int main() {
       break;
     }
     if (event.keyboard.keycode == ALLEGRO_KEY_D) {
-      xbolinha += 1;
+      xknight += 1;
     }
     if (event.keyboard.keycode == ALLEGRO_KEY_A) {
-      xbolinha -= 1;
+      xknight -= 1;
     }
     if (event.keyboard.keycode == ALLEGRO_KEY_W) {
-      ybolinha -= 1;
+      yknight -= 1;
     }
     if (event.keyboard.keycode == ALLEGRO_KEY_S) {
-      ybolinha += 1;
+      yknight += 1;
     }
     ////////////////////////CONTROLES//////////////////////////////////////////////
 
-    if (ybolinha < 0) {
-      ybolinha += 1;
+    if (yknight < 0) {
+      yknight += 1;
     }
-    if (xbolinha < 0) {
-      ybolinha += 1;
+    if (xknight < 0) {
+      yknight += 1;
     }
-    if (ybolinha > TELA_ALTURA) {
-      ybolinha -= 1;
+    if (yknight > TELA_ALTURA) {
+      yknight -= 1;
     }
-    if (xbolinha > TELA_LARGURA) {
-      xbolinha -= 1;
+    if (xknight > TELA_LARGURA) {
+      xknight -= 1;
     }
     ////////////////////////LIMITES DA TELA//////////////////////////////////////
 
     if (mapa = 2) {
       al_clear_to_color(al_map_rgb(255, 255, 255));
       al_draw_bitmap(villa, 0, 0, 0);
-      al_draw_bitmap(bolinha, xbolinha, ybolinha, 0);
+      al_draw_bitmap(knight, xknight, yknight, 0);
     }
 
     if (mapa = 1) {
       al_clear_to_color(al_map_rgb(255, 255, 255));
       al_draw_bitmap(villa2, 0, 0, 0);
-      al_draw_bitmap(bolinha, xbolinha, ybolinha, 0);
-      if (ybolinha < 440 && ybolinha > 315 && xbolinha > 10 && xbolinha < 325){
-        ybolinha += 1;
+      al_draw_bitmap(knight, xknight, yknight, 0);
+      if (yknight < 440 && yknight > 315 && xknight > 10 && xknight < 325){
+        yknight += 1;
       }
-      if (ybolinha < 190 && ybolinha > 10 && xbolinha < 355){
-        xbolinha += 1;
+      if (yknight < 190 && yknight > 10 && xknight < 355){
+        xknight += 1;
       }
-      if (xbolinha < 10 && ybolinha < 0 && ybolinha > 60){
-        xbolinha -= 1;
+      if (xknight < 10 && yknight < 0 && yknight > 60){
+        xknight -= 1;
       }
       ///COLISAO///
     }
@@ -101,8 +102,8 @@ int main() {
     char ybposicao[50];
     char nmapa[50];
     sprintf(nmapa, "mapa: é %d", mapa);
-    sprintf(xbposicao, "xbolinha: é %d", xbolinha);
-    sprintf(ybposicao, "ybolinha: é %d", ybolinha);
+    sprintf(xbposicao, "xknight: é %d", xknight);
+    sprintf(ybposicao, "yknight: é %d", yknight);
     char xcposicao[50];
     char ycposicao[50];
     sprintf(xcposicao, "xcubo: é %d", xcubo);
@@ -119,7 +120,7 @@ int main() {
   al_destroy_font(font);
   al_destroy_display(display);
   al_destroy_event_queue(event_queue);
-  al_destroy_bitmap(bolinha);
+  al_destroy_bitmap(knight);
   al_destroy_bitmap(villa);
   //Encerrando
   return 0;
