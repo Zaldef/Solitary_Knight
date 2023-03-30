@@ -21,7 +21,7 @@ int main() {
   ALLEGRO_DISPLAY *display = al_create_display(TELA_LARGURA, TELA_ALTURA);
   al_set_window_position(display, 50, 50);
   ALLEGRO_FONT *font = al_create_builtin_font();
-  ALLEGRO_TIMER *timer = al_create_timer(1.0 / 30.0);
+  ALLEGRO_TIMER *timer = al_create_timer(1.0 / 60.0);
   ALLEGRO_BITMAP *knight = al_load_bitmap("./images/Chars/actor9.png");
   ALLEGRO_BITMAP *mapa = al_load_bitmap("./images/Mapas/mapa1.png");
   
@@ -32,7 +32,8 @@ int main() {
   al_register_event_source(event_queue, al_get_timer_event_source(timer));
   al_start_timer(timer);
   
-  int xknight = 0, yknight = 0, xmapa = 0, ymapa = 0;
+  int xknight = 32, yknight = 32; 
+  int xmapa = 0, ymapa = 0;
   float frame = 0.f;
   int current_frame_y = 0;
 
@@ -73,20 +74,18 @@ int main() {
       xmapa += 640;
       xknight = 640;
     }
-    if (yknight > TELA_ALTURA-32 && ymapa != -1920){
+    if (yknight > TELA_ALTURA-32){
       ymapa -= 640;
       yknight = 0;
     }
-    if (xknight > TELA_LARGURA-32 && xmapa != -1920){
+    if (xknight > TELA_LARGURA-32){
       xmapa -= 640;
       xknight = 0;
     }
-    ////////////////////////LIMITES DA TELA//////////////////////////////////////
+    ////////////////////////LIMITES DA TELA & TROCA DE MAPA//////////////////////////////////////
 
       al_draw_bitmap(mapa, xmapa, ymapa, 0);
       al_draw_bitmap_region(knight, 32 * (int)frame,current_frame_y,32,32,xknight,yknight,0);
-      
-      ///COLISAO///
  
     ////////////////////////Definições de mapa//////////////////////////////////////////////
 
