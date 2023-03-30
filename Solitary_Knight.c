@@ -32,7 +32,9 @@ int main() {
   al_register_event_source(event_queue, al_get_timer_event_source(timer));
   al_start_timer(timer);
   
-  int xknight = 32, yknight = 32; 
+  int xknight = 0, yknight = 0;
+  int tamanho_xk = 32, tamanho_yk = 32;
+  int deslocamento = 32; 
   int xmapa = 0, ymapa = 0;
   float frame = 0.f;
   int current_frame_y = 0;
@@ -46,17 +48,17 @@ int main() {
     if (event.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
       break;
     }else if( event.keyboard.keycode == ALLEGRO_KEY_S){
-      current_frame_y = 32 * 0;
-      yknight += 32;
+      current_frame_y = tamanho_yk * 0;
+      yknight += deslocamento;
     }else if( event.keyboard.keycode == ALLEGRO_KEY_A){
-      current_frame_y = 32 * 1;
-      xknight -= 32;
+      current_frame_y = tamanho_xk * 1;
+      xknight -= deslocamento;
     }else if( event.keyboard.keycode == ALLEGRO_KEY_D){
-      current_frame_y = 32 * 2;
-      xknight += 32;
+      current_frame_y = tamanho_xk * 2;
+      xknight += deslocamento;
     }else if( event.keyboard.keycode == ALLEGRO_KEY_W){
-      current_frame_y = 32 * 3;
-      yknight -= 32;
+      current_frame_y = tamanho_yk * 3;
+      yknight -= deslocamento;
     }
 
     frame += 0.3f;
@@ -67,25 +69,25 @@ int main() {
     ////////////////////////CONTROLES//////////////////////////////////////////////
 
     if (yknight < 0) {
-      ymapa += 640;
-      yknight = 640;
+      ymapa += +TELA_ALTURA;
+      yknight += TELA_ALTURA;
     }
     if (xknight < 0) {
-      xmapa += 640;
-      xknight = 640;
+      xmapa += +TELA_LARGURA;
+      xknight += TELA_LARGURA;
     }
-    if (yknight > TELA_ALTURA-32){
-      ymapa -= 640;
+    if (yknight > TELA_ALTURA-tamanho_yk){
+      ymapa -= TELA_ALTURA;
       yknight = 0;
     }
-    if (xknight > TELA_LARGURA-32){
-      xmapa -= 640;
+    if (xknight > TELA_LARGURA-tamanho_xk){
+      xmapa -= TELA_LARGURA;
       xknight = 0;
     }
     ////////////////////////LIMITES DA TELA & TROCA DE MAPA//////////////////////////////////////
 
       al_draw_bitmap(mapa, xmapa, ymapa, 0);
-      al_draw_bitmap_region(knight, 32 * (int)frame,current_frame_y,32,32,xknight,yknight,0);
+      al_draw_bitmap_region(knight, tamanho_xk * (int)frame,current_frame_y,tamanho_xk,tamanho_yk,xknight,yknight,0);
  
     ////////////////////////Definições de mapa//////////////////////////////////////////////
 
