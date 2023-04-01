@@ -5,6 +5,7 @@
 #include <allegro5/allegro_primitives.h>
 #include <allegro5/allegro_ttf.h> // Renderizar fontes
 #include <allegro5/keyboard.h> // Teclado
+#include <allegro5/allegro_native_dialog.h> // Icone
 #include <stdio.h>
 
 int main() {
@@ -21,7 +22,9 @@ int main() {
   ALLEGRO_FONT *font = al_create_builtin_font();
   ALLEGRO_TIMER *timer = al_create_timer(1.0 / 60.0);
   ALLEGRO_BITMAP *knight = al_load_bitmap("./images/Chars/actor9.png");
-  ALLEGRO_BITMAP *mapa = al_load_bitmap("./images/Mapas/mapa1.png");
+  ALLEGRO_BITMAP *mapa = al_load_bitmap("./images/Mapas/mapa.png");
+  ALLEGRO_BITMAP *icon = al_load_bitmap("./images/knight.png");
+  al_set_display_icon(display, icon);
   
 
   ALLEGRO_EVENT_QUEUE *event_queue = al_create_event_queue();
@@ -115,6 +118,7 @@ int main() {
   al_destroy_event_queue(event_queue);
   al_destroy_bitmap(knight);
   al_destroy_bitmap(mapa);
+  al_destroy_bitmap(icon);
   //Encerrando
   return 0;
 }
