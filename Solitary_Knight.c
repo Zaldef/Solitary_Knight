@@ -25,6 +25,7 @@ int main() {
     ALLEGRO_BITMAP *mapa = al_load_bitmap("./images/Mapas/mapa.png");
     ALLEGRO_BITMAP * dragon_r = al_load_bitmap("./images/Chars/dragon.png"); // sprite dragon red
     ALLEGRO_BITMAP * dragon_b = al_load_bitmap("./images/Chars/blue_dragon.png"); // sprite dragon blue
+    ALLEGRO_BITMAP * menu_inicial = al_load_bitmap("./images/menu_inicial.jpg");
 
     ALLEGRO_EVENT_QUEUE *event_queue = al_create_event_queue();
     al_register_event_source(event_queue, al_get_display_event_source(display));
@@ -49,7 +50,17 @@ int main() {
     int current_frame_dragon_r = 161;
     float current_frame_dragon_b = 128;
     int dragon_r_x = 235, dragon_r_y = 188, dragon_b_x = 275, dragon_b_y = 78; // posição na tela dos dragoes
-  
+  while (true) {
+    ALLEGRO_EVENT event;
+    al_wait_for_event(event_queue, &event);
+    al_draw_bitmap(menu_inicial, 0, 0, 0);
+    al_draw_text(font, al_map_rgb(0, 0, 0), 170, 630,0, "Pressione qualquer tecla para começar");
+    if (event.type == ALLEGRO_EVENT_KEY_DOWN) {
+      break;
+    }
+    al_flip_display();
+  }
+  al_destroy_bitmap(menu_inicial);
   while (true) {
     //////////Inicialização//////////
     ALLEGRO_EVENT event;
