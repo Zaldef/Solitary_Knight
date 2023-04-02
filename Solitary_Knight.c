@@ -17,6 +17,7 @@ int main() {
   al_init_image_addon();
   al_install_keyboard();
 
+<<<<<<< Updated upstream
   ALLEGRO_DISPLAY *display = al_create_display(TELA_LARGURA, TELA_ALTURA);
   al_set_window_position(display, 200, 200);
   ALLEGRO_FONT *font = al_create_builtin_font();
@@ -37,12 +38,64 @@ int main() {
   int xcubo = 100;
   int ycubo = 150;
 
+=======
+    ALLEGRO_DISPLAY *display = al_create_display(TELA_LARGURA, TELA_ALTURA);
+      al_set_window_position(display, 50, 50);
+    ALLEGRO_FONT * font = al_create_builtin_font();
+    ALLEGRO_TIMER * timer = al_create_timer(1.0 / 30.0);
+    ALLEGRO_BITMAP * knight = al_load_bitmap("./images/Chars/actor9.png");
+    ALLEGRO_BITMAP * mapa = al_load_bitmap("./images/Mapas/mapa.png");
+    ALLEGRO_BITMAP * dragon_r = al_load_bitmap("./images/Chars/dragon.png"); // sprite dragon red
+    ALLEGRO_BITMAP * dragon_b = al_load_bitmap("./images/Chars/blue_dragon.png"); // sprite dragon blue
+    ALLEGRO_BITMAP * menu_inicial = al_load_bitmap("./images/menu_inicial.jpg");
+ 
+    ALLEGRO_EVENT_QUEUE *event_queue = al_create_event_queue();
+    al_register_event_source(event_queue, al_get_display_event_source(display));
+    al_register_event_source(event_queue, al_get_keyboard_event_source());
+    al_register_event_source(event_queue, al_get_timer_event_source(timer));
+    al_start_timer(timer);
+  
+  // Variaveis cavaleiro
+    int xknight = 170, yknight = 608; //posição inicial do cavaleiro
+    int tamanho_xk = 32, tamanho_yk = 32; //tamanho do sprite
+    int deslocamento = 10; // velocidade 
+    float frame = 0.f;
+  
+  //variaveis mapa
+    int xmapa = 0, ymapa = 0, map = 0; // posição do map
+    int mapa_X = -1280;
+    int mapa_Y = -1280;
+  
+  // variaveis dragoes
+    float frame_d = 0.f; // frames dragão
+    int current_frame_y = 0;
+    int current_frame_dragon_r = 161;
+    float current_frame_dragon_b = 128;
+    int dragon_r_x = 235, dragon_r_y = 188, dragon_b_x = 275, dragon_b_y = 78; // posição na tela dos dragoes
+
+  while (true) {
+    ALLEGRO_EVENT event;
+    al_wait_for_event(event_queue, &event);
+    al_draw_bitmap(menu_inicial, 0, 0, 0);
+    al_draw_text(font, al_map_rgb(0, 0, 0), 170, 630,0, "Pressione qualquer tecla para começar");
+    if (event.type == ALLEGRO_EVENT_KEY_DOWN) {
+      break;
+    }
+    al_flip_display();
+  }
+  al_destroy_bitmap(menu_inicial);
+>>>>>>> Stashed changes
   while (true) {
 
     ALLEGRO_EVENT event;
     al_wait_for_event(event_queue, &event);
+<<<<<<< Updated upstream
     ////////////////////////Inicialização//////////////////////////////////////////////
 
+=======
+
+    /////encerrar o executavel/////
+>>>>>>> Stashed changes
     if (event.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
       break;
     }
