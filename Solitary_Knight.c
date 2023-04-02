@@ -166,6 +166,3 @@ int main() {
   //Encerrando
   return 0;
 }
-
-
-
