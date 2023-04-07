@@ -1,8 +1,9 @@
 #include <allegro5/allegro.h> // Main biblioteca
 #include <allegro5/allegro_font.h>  // Usar fontes
-#include <allegro5/allegro_image.h> // Usar imagens
 #include <allegro5/allegro_ttf.h> // Renderizar fontes
+#include <allegro5/allegro_image.h> // Usar imagens
 #include <allegro5/keyboard.h> // Teclado
+#include <stdio.h>
 
 int main() {
   ///// Definições inicias do allegro /////
@@ -21,11 +22,18 @@ int main() {
     al_set_window_position(display, 50, 50);
     ALLEGRO_FONT *font = al_create_builtin_font();
     ALLEGRO_TIMER *timer = al_create_timer(1.0 / 30.0);
-    ALLEGRO_BITMAP *knight = al_load_bitmap("./images/Chars/actor9.png");
+    ALLEGRO_BITMAP *knight[6];
+    knight[0] = al_load_bitmap("./images/char_1.png");
+    knight[1] = al_load_bitmap("./images/char_2.png");
+    knight[2] = al_load_bitmap("./images/char_3.png");
+    knight[3] = al_load_bitmap("./images/char_4.png");
+    knight[4] = al_load_bitmap("./images/char_5.png");
+    knight[5] = al_load_bitmap("./images/char_6.png");
     ALLEGRO_BITMAP *mapa = al_load_bitmap("./images/Mapas/mapa.png");
     ALLEGRO_BITMAP * dragon_r = al_load_bitmap("./images/Chars/dragon.png"); // sprite dragon red
     ALLEGRO_BITMAP * dragon_b = al_load_bitmap("./images/Chars/blue_dragon.png"); // sprite dragon blue
     ALLEGRO_BITMAP * menu_inicial = al_load_bitmap("./images/menu_inicial.jpg");
+    ALLEGRO_BITMAP * menu_char = al_load_bitmap("./images/menu_char.jpg");
 
     ALLEGRO_EVENT_QUEUE *event_queue = al_create_event_queue();
     al_register_event_source(event_queue, al_get_display_event_source(display));
@@ -34,6 +42,7 @@ int main() {
     al_start_timer(timer);
   
   ///// Variaveis cavaleiro /////
+    int persona = 2; // knight jogado
     int xknight = 160, yknight = 608; //posição inicial do cavaleiro
     int tamanho_xk = 32, tamanho_yk = 32; //tamanho do sprite
     int deslocamento = 32; // velocidade/pixel 
@@ -57,13 +66,38 @@ int main() {
     al_wait_for_event(event_queue, &event);
     al_draw_bitmap(menu_inicial, 0, 0, 0);
     al_draw_text(font, al_map_rgb(0, 0, 0), 170, 630,0, "Pressione qualquer tecla para começar");
-    if (event.type == ALLEGRO_EVENT_KEY_DOWN) {
+    if (event.type == ALLEGRO_EVENT_KEY_DOWN || event.keyboard.keycode == ALLEGRO_KEY_ESCAPE) {
       break;
     }
     al_flip_display();
   }
   al_destroy_bitmap(menu_inicial);
-  
+
+  ///// Escolha char /////
+  while (true) { 
+    ALLEGRO_EVENT event;
+    al_wait_for_event(event_queue, &event);
+    al_draw_bitmap(menu_char, 0, 0, 0);
+    float sx = 32; // inicio do ponteiro x dentro da imagem
+    float sy = 0; // inicio do ponteiro y dentro da imagem
+    float sw = 32; //qntd de pixels de largura inicial
+    float sh = 32; //qntd de pixels de altura inicial
+    float dw = 128; // qntd de pixels de largura final
+    float dh = 128; // qntd de pixels de altura final
+    int k = 0;
+    for (int j = 0; j<2; j++)
+      for (int i = 0; i < 3; i++) {
+        float dx = 64 + i * 192; //inicio do ponteiro x na tela
+        float dy = 224 + j * 192 ; // inicio do ponteiro y na tela
+        al_draw_scaled_bitmap(knight[k],sx,sy,sw,sh,dx,dy,dw,dh,0);
+        k ++;
+      }
+    if (event.type == ALLEGRO_EVENT_KEY_DOWN || event.keyboard.keycode == ALLEGRO_KEY_ESCAPE) {
+      break;
+    }
+    al_flip_display();
+  }
+  al_destroy_bitmap(menu_char);
   ///// loop principal game /////
   while (true) {
     /////Inicialização/////
@@ -71,7 +105,7 @@ int main() {
     al_wait_for_event(event_queue, &event);
     
     /////encerrar o executavel/////
-    if (event.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
+    if (event.type == ALLEGRO_EVENT_DISPLAY_CLOSE || event.keyboard.keycode == ALLEGRO_KEY_ESCAPE) {
       break;
     }
 
@@ -138,7 +172,7 @@ int main() {
     
     ///// Coisas na tela /////
       al_draw_bitmap(mapa, xmapa, ymapa, 0); // Mapa
-      al_draw_bitmap_region(knight, tamanho_xk * (int)frame,current_frame_y,tamanho_xk,tamanho_yk,xknight,yknight,0); // Knight
+      al_draw_bitmap_region(knight[persona], tamanho_xk * (int)frame,current_frame_y,tamanho_xk,tamanho_yk,xknight,yknight,0); // Knight
       // dragao azul
       if(map == 1){
       al_draw_bitmap_region(dragon_b, 144 * (int)frame_d, current_frame_dragon_b*2, 144, 128, dragon_b_x, dragon_b_y, 0); 
@@ -178,7 +212,7 @@ int main() {
   al_destroy_font(font);
   al_destroy_display(display);
   al_destroy_event_queue(event_queue);
-  al_destroy_bitmap(knight);
+  al_destroy_bitmap(knight[persona]);
   al_destroy_bitmap(mapa);
   al_destroy_bitmap(dragon_b);
   al_destroy_bitmap(dragon_r);
