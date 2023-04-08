@@ -1,33 +1,41 @@
-#include <allegro5/allegro.h>
-#include <allegro5/allegro_color.h>
+#include <allegro5/allegro.h> // Main biblioteca
 #include <allegro5/allegro_font.h>  // Usar fontes
-#include <allegro5/allegro_image.h> // Usar imagens
-#include <allegro5/allegro_primitives.h>
 #include <allegro5/allegro_ttf.h> // Renderizar fontes
+#include <allegro5/allegro_image.h> // Usar imagens
 #include <allegro5/keyboard.h> // Teclado
+#include <allegro5/allegro_primitives.h> // Desenhar formas
 #include <stdio.h>
 
 int main() {
-  // Definições inicias do allegro
+  ///// Definições inicias do allegro /////
+    //Tamanho mapa
     int TELA_ALTURA = 640;
     int TELA_LARGURA = 640;
 
+    //Carregando bibliotecas
     al_init();
     al_init_font_addon();
     al_init_image_addon();
     al_install_keyboard();
-    al_init_primitives_addon();//TESTE DE MATRIZ, excluir depois
+    al_init_primitives_addon();
 
+    //referenciais e ponteiros
     ALLEGRO_DISPLAY *display = al_create_display(TELA_LARGURA, TELA_ALTURA);
     al_set_window_position(display, 50, 50);
     ALLEGRO_FONT *font = al_create_builtin_font();
     ALLEGRO_TIMER *timer = al_create_timer(1.0 / 30.0);
-    ALLEGRO_BITMAP *knight = al_load_bitmap("./images/Chars/actor9.png");
+    ALLEGRO_BITMAP *knight[6];
+    knight[0] = al_load_bitmap("./images/char_1.png");
+    knight[1] = al_load_bitmap("./images/char_2.png");
+    knight[2] = al_load_bitmap("./images/char_3.png");
+    knight[3] = al_load_bitmap("./images/char_4.png");
+    knight[4] = al_load_bitmap("./images/char_5.png");
+    knight[5] = al_load_bitmap("./images/char_6.png");
     ALLEGRO_BITMAP *mapa = al_load_bitmap("./images/Mapas/mapa.png");
     ALLEGRO_BITMAP * dragon_r = al_load_bitmap("./images/Chars/dragon.png"); // sprite dragon red
     ALLEGRO_BITMAP * dragon_b = al_load_bitmap("./images/Chars/blue_dragon.png"); // sprite dragon blue
     ALLEGRO_BITMAP * menu_inicial = al_load_bitmap("./images/menu_inicial.jpg");
-    ALLEGRO_COLOR cor = al_map_rgb(255, 0, 0);//TESTE DE MATRIZ, excluir depois
+    ALLEGRO_BITMAP * menu_char = al_load_bitmap("./images/menu_char.jpg");
 
     ALLEGRO_EVENT_QUEUE *event_queue = al_create_event_queue();
     al_register_event_source(event_queue, al_get_display_event_source(display));
@@ -35,42 +43,115 @@ int main() {
     al_register_event_source(event_queue, al_get_timer_event_source(timer));
     al_start_timer(timer);
   
-  // Variaveis cavaleiro
+  ///// Variaveis cavaleiro /////
+    int persona = 0; // knight jogado(skin)
     int xknight = 160, yknight = 608; //posição inicial do cavaleiro
     int tamanho_xk = 32, tamanho_yk = 32; //tamanho do sprite
-    int deslocamento = 32; // velocidade 
-    float frame = 0.f;
+    int deslocamento = 32; // velocidade/pixel 
+    float frame = 0.f; //frames
+    int current_frame_y = 0; // utilizado para atualizar o ponteiro do frame dentro da imagem
   
-  //variaveis mapa
+  ///// variaveis mapa /////
     int xmapa = 0, ymapa = 0, map = 0; // posição do map
     int mapa_X = -1280;
-    int mapa_Y = -1280;
+    int mapa_Y = -1280; // tamanho mapa 
   
-  // variaveis dragoes
+  ///// variaveis dragoes /////
     float frame_d = 0.f; // frames dragão
-    int current_frame_y = 0;
-    int current_frame_dragon_r = 161;
-    float current_frame_dragon_b = 128;
+    int current_frame_dragon_r = 161; // utilizado para atualizar o ponteiro do frame dentro da imagem
+    float current_frame_dragon_b = 128; // utilizado para atualizar o ponteiro do frame dentro da imagem
     int dragon_r_x = 235, dragon_r_y = 188, dragon_b_x = 275, dragon_b_y = 78; // posição na tela dos dragoes
 
-  while (true) {
-    ALLEGRO_EVENT event;
-    al_wait_for_event(event_queue, &event);
-    al_draw_bitmap(menu_inicial, 0, 0, 0);
-    al_draw_text(font, al_map_rgb(0, 0, 0), 170, 630,0, "Pressione qualquer tecla para começar");
-    if (event.type == ALLEGRO_EVENT_KEY_DOWN) {
-      break;
+  ///// Variveis do retangulo no Menu_Char /////
+    int x1 = 59;  //inicio do ponteiro x na tela
+    int y1 = 219; // inicio do ponteiro y na tela
+    int x2 = 197; //termino do ponteiro x na tela
+    int y2 = 357; // termino do ponteiro y na tela
+    int thickness = 5; //largura da linha
+
+  ///// Tela inicial /////
+    while (true) { 
+      ALLEGRO_EVENT event;
+      al_wait_for_event(event_queue, &event);
+      al_draw_bitmap(menu_inicial, 0, 0, 0);
+      al_draw_text(font, al_map_rgb(0, 0, 0), 170, 630,0, "Pressione qualquer tecla para começar");
+      if (event.type == ALLEGRO_EVENT_KEY_DOWN || event.keyboard.keycode == ALLEGRO_KEY_ESCAPE) {
+        break;
+      }
+      al_flip_display();
     }
-    al_flip_display();
-  }
-  al_destroy_bitmap(menu_inicial);
+    al_destroy_bitmap(menu_inicial);
+
+  ///// Tela_Escolha_char /////
+    while (true) { 
+      ALLEGRO_EVENT event;
+      al_wait_for_event(event_queue, &event);
+      al_draw_bitmap(menu_char, 0, 0, 0);
+      /// variaveis para impressao redmensionada ///
+      float sx = 32; // inicio do ponteiro x dentro da imagem
+      float sy = 0; // inicio do ponteiro y dentro da imagem
+      float sw = 32; //qntd de pixels de largura inicial
+      float sh = 32; //qntd de pixels de altura inicial
+      float dw = 128; // qntd de pixels de largura final
+      float dh = 128; // qntd de pixels de altura final
+      int k = 0; // ponteiro da matriz de personagem
+      /// loop para impressao 3X2) ///
+      for (int j = 0; j<2; j++)
+        for (int i = 0; i < 3; i++) {
+          float dx = 64 + i * 192; //inicio do ponteiro x na tela
+          float dy = 224 + j * 192 ; // inicio do ponteiro y na tela
+          al_draw_scaled_bitmap(knight[k],sx,sy,sw,sh,dx,dy,dw,dh,0);
+          k ++;
+        }
+      al_draw_rectangle(x1, y1, x2, y2, al_map_rgb(255, 255, 255), thickness); //desenhar o retangulo para realçar o personagem escolhido
+      /// movimentação do retangulo, e atualização da variavel persona ///
+      if (event.type == ALLEGRO_EVENT_KEY_DOWN ) {
+        switch (event.keyboard.keycode){
+          case ALLEGRO_KEY_W:
+          if(y1 == 411 && y2 == 549){
+          y1  -= 192;
+          y2  -= 192;
+          persona -=3;
+          }
+          break;
+          case ALLEGRO_KEY_A:
+          if(x1 > 59 && x2 > 197 ){ 
+          x1  -= 192;
+          x2  -= 192;
+          persona --;
+          }
+          break;
+          case ALLEGRO_KEY_S:
+          if(y1 == 219 && y2 == 357){
+          y1  += 192;
+          y2  += 192;
+          persona += 3;
+          }
+          break;
+          case ALLEGRO_KEY_D:
+          if( x1 < 443 && x2 < 581){
+          x1  += 192;
+          x2  += 192;
+          persona ++;
+          }
+          break;       
+        }
+      }
+
+      if ( event.keyboard.keycode == ALLEGRO_KEY_ESCAPE || event.keyboard.keycode == ALLEGRO_KEY_ENTER) {
+        break;
+      }
+      al_flip_display();
+    }
+    al_destroy_bitmap(menu_char);
+  ///// loop principal game /////
   while (true) {
-    //////////Inicialização//////////
+    /////Inicialização/////
     ALLEGRO_EVENT event;
     al_wait_for_event(event_queue, &event);
     
     /////encerrar o executavel/////
-    if (event.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
+    if (event.type == ALLEGRO_EVENT_DISPLAY_CLOSE || event.keyboard.keycode == ALLEGRO_KEY_ESCAPE) {
       break;
     }
 
@@ -86,38 +167,38 @@ int main() {
               frame -= 3;
             }
           }
-          break;
-            case ALLEGRO_KEY_A:
-              if(xknight > 0){
-                current_frame_y = tamanho_xk * 1;
-                xknight -= deslocamento;
-                frame += 0.3f;
-                if( frame > 3){
-                   frame -= 3;
-                }
-              }
-              break;
-            case ALLEGRO_KEY_D:
-                if(xknight < TELA_LARGURA - tamanho_xk){
-                  current_frame_y = tamanho_xk * 2;
-                  xknight += deslocamento;
-                  frame += 0.3f;
-                  if( frame > 3){
-                    frame -= 3;
-                  }
-                }
-                break;
-            case ALLEGRO_KEY_W:
-              if(yknight > 0){
-                current_frame_y = tamanho_yk * 3;
-                yknight -= deslocamento;
-                frame += 0.3f;
-                if( frame > 3){
-                  frame -= 3;
-                }
-              }
-              break;
-        }
+        break;
+        case ALLEGRO_KEY_A:
+          if(xknight > 0){
+            current_frame_y = tamanho_xk * 1;
+            xknight -= deslocamento;
+            frame += 0.3f;
+            if( frame > 3){
+              frame -= 3;
+            }
+          }
+        break;
+        case ALLEGRO_KEY_D:
+          if(xknight < TELA_LARGURA - tamanho_xk){
+            current_frame_y = tamanho_xk * 2;
+            xknight += deslocamento;
+            frame += 0.3f;
+            if( frame > 3){
+              frame -= 3;
+            }
+          }
+        break;
+        case ALLEGRO_KEY_W:
+          if(yknight > 0){
+            current_frame_y = tamanho_yk * 3;
+            yknight -= deslocamento;
+            frame += 0.3f;
+            if( frame > 3){
+              frame -= 3;
+            }
+          }
+        break;
+      }
     }
     
     ///// TROCA DE MAPA /////
@@ -137,87 +218,43 @@ int main() {
     
     ///// Coisas na tela /////
       al_draw_bitmap(mapa, xmapa, ymapa, 0); // Mapa
-      al_draw_bitmap_region(knight, tamanho_xk * (int)frame,current_frame_y,tamanho_xk,tamanho_yk,xknight,yknight,0); // Knight
+      al_draw_bitmap_region(knight[persona], tamanho_xk * (int)frame,current_frame_y,tamanho_xk,tamanho_yk,xknight,yknight,0); // Knight
+      // dragao azul
       if(map == 1){
       al_draw_bitmap_region(dragon_b, 144 * (int)frame_d, current_frame_dragon_b*2, 144, 128, dragon_b_x, dragon_b_y, 0); 
-      }// dragao azul
+      }
+      // Dragon vermelho
       if(map == 2){
       al_draw_bitmap_region(dragon_r, 191 * (int)frame_d, current_frame_dragon_r*2, 191, 161, dragon_r_x, dragon_r_y, 0); 
-      }// Dragon vermelho
+      }
+      // animação dragão
       frame_d += 0.3f;
       if( frame_d > 3){
         frame_d -= 3;
       }
  
-      al_draw_line(32, 0, 32,  640, cor, 1); //TESTE DE MATRIZ, excluir depois
-      al_draw_line(64, 0, 64,  640, cor, 1); //TESTE DE MATRIZ, excluir depois
-      al_draw_line(96, 0, 96,  640, cor, 1); //TESTE DE MATRIZ, excluir depois
-      al_draw_line(128, 0,128 , 640,  cor, 1); //TESTE DE MATRIZ, excluir depois
-      al_draw_line(160, 0,160 , 640,  cor, 1); //TESTE DE MATRIZ, excluir depois
-      al_draw_line(192, 0,192 , 640,  cor, 1); //TESTE DE MATRIZ, excluir depois
-      al_draw_line(224, 0,224 , 640,  cor, 1); //TESTE DE MATRIZ, excluir depois
-      al_draw_line(256, 0,256 , 640,  cor, 1); //TESTE DE MATRIZ, excluir depois
-      al_draw_line(288, 0,288 , 640,  cor, 1); //TESTE DE MATRIZ, excluir depois
-      al_draw_line(320, 0,320 , 640,  cor, 1); //TESTE DE MATRIZ, excluir depois
-      al_draw_line(352, 0,352 , 640,  cor, 1); //TESTE DE MATRIZ, excluir depois
-      al_draw_line(384, 0,384 , 640,  cor, 1); //TESTE DE MATRIZ, excluir depois
-      al_draw_line(416, 0,416 , 640,  cor, 1); //TESTE DE MATRIZ, excluir depois
-      al_draw_line(448, 0,448 , 640,  cor, 1); //TESTE DE MATRIZ, excluir depois
-      al_draw_line(480, 0,480 , 640,  cor, 1); //TESTE DE MATRIZ, excluir depois
-      al_draw_line(512, 0,512 , 640,  cor, 1); //TESTE DE MATRIZ, excluir depois
-      al_draw_line(544, 0,544 , 640,  cor, 1); //TESTE DE MATRIZ, excluir depois
-      al_draw_line(576, 0,576 , 640,  cor, 1); //TESTE DE MATRIZ, excluir depois
-      al_draw_line(608, 0,608 , 640,  cor, 1); //TESTE DE MATRIZ, excluir depois
-      al_draw_line(640, 0,640 , 640,  cor, 1); //TESTE DE MATRIZ, excluir depois
-
-      al_draw_line(0, 32,  640, 32, cor, 1); //TESTE DE MATRIZ, excluir depois
-      al_draw_line(0, 64,  640, 64, cor, 1); //TESTE DE MATRIZ, excluir depois
-      al_draw_line(0, 96,  640, 96, cor, 1); //TESTE DE MATRIZ, excluir depois
-      al_draw_line(0,128, 640, 128, cor, 1); //TESTE DE MATRIZ, excluir depois
-      al_draw_line(0,160, 640, 160, cor, 1); //TESTE DE MATRIZ, excluir depois
-      al_draw_line(0,192, 640, 192, cor, 1); //TESTE DE MATRIZ, excluir depois
-      al_draw_line(0,224, 640, 224, cor, 1); //TESTE DE MATRIZ, excluir depois
-      al_draw_line(0,256, 640, 256, cor, 1); //TESTE DE MATRIZ, excluir depois
-      al_draw_line(0,288, 640, 288, cor, 1); //TESTE DE MATRIZ, excluir depois
-      al_draw_line(0,320, 640, 320, cor, 1); //TESTE DE MATRIZ, excluir depois
-      al_draw_line(0,352, 640, 352, cor, 1); //TESTE DE MATRIZ, excluir depois
-      al_draw_line(0,384, 640, 384, cor, 1); //TESTE DE MATRIZ, excluir depois
-      al_draw_line(0,416, 640, 416, cor, 1); //TESTE DE MATRIZ, excluir depois
-      al_draw_line(0,448, 640, 448, cor, 1); //TESTE DE MATRIZ, excluir depois
-      al_draw_line(0,480, 640, 480, cor, 1); //TESTE DE MATRIZ, excluir depois
-      al_draw_line(0,512, 640, 512, cor, 1); //TESTE DE MATRIZ, excluir depois
-      al_draw_line(0,544, 640, 544, cor, 1); //TESTE DE MATRIZ, excluir depois
-      al_draw_line(0,576, 640, 576, cor, 1); //TESTE DE MATRIZ, excluir depois
-      al_draw_line(0,608, 640, 608, cor, 1); //TESTE DE MATRIZ, excluir depois
-      al_draw_line(0,640, 640, 640, cor, 1); //TESTE DE MATRIZ, excluir depois
     ////////////////////////EXIBIR informações na tela//////////////////////////////////////////////
     char xkposicao[50];
     char ykposicao[50];
-    char xmposicao[50];
-    char ymposicao[50];
-    char mapp[50];
+
 
     sprintf(xkposicao, "xknight: é %d", xknight);
     sprintf(ykposicao, "yknight: é %d", yknight);
-    sprintf(xmposicao, "xmapa: é %d", xmapa);
-    sprintf(ymposicao, "ymapa: é %d", ymapa);
-    sprintf(mapp, "mapa: é %d", map);
+
 
     al_draw_text(font, al_map_rgb(255, 255, 255), 0, 10, 0, xkposicao);
     al_draw_text(font, al_map_rgb(255, 255, 255), 0, 20, 0, ykposicao);
-    al_draw_text(font, al_map_rgb(255, 255, 255), 0, 30, 0, xmposicao);
-    al_draw_text(font, al_map_rgb(255, 255, 255), 0, 40, 0, ymposicao);
-    al_draw_text(font, al_map_rgb(255, 255, 255), 0, 50, 0, mapp);
+
     al_flip_display();
     
   }
+  ///// Encerrando /////
   al_destroy_font(font);
   al_destroy_display(display);
   al_destroy_event_queue(event_queue);
-  al_destroy_bitmap(knight);
+  al_destroy_bitmap(knight[persona]);
   al_destroy_bitmap(mapa);
   al_destroy_bitmap(dragon_b);
   al_destroy_bitmap(dragon_r);
-  //Encerrando
   return 0;
 }
