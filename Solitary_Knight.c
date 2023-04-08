@@ -3,6 +3,7 @@
 #include <allegro5/allegro_ttf.h> // Renderizar fontes
 #include <allegro5/allegro_image.h> // Usar imagens
 #include <allegro5/keyboard.h> // Teclado
+#include <allegro5/allegro_primitives.h> // Desenhar formas
 #include <stdio.h>
 
 int main() {
@@ -16,6 +17,7 @@ int main() {
     al_init_font_addon();
     al_init_image_addon();
     al_install_keyboard();
+    al_init_primitives_addon();
 
     //referenciais e ponteiros
     ALLEGRO_DISPLAY *display = al_create_display(TELA_LARGURA, TELA_ALTURA);
@@ -42,7 +44,7 @@ int main() {
     al_start_timer(timer);
   
   ///// Variaveis cavaleiro /////
-    int persona = 2; // knight jogado
+    int persona = 0; // knight jogado
     int xknight = 160, yknight = 608; //posição inicial do cavaleiro
     int tamanho_xk = 32, tamanho_yk = 32; //tamanho do sprite
     int deslocamento = 32; // velocidade/pixel 
@@ -59,6 +61,13 @@ int main() {
     int current_frame_dragon_r = 161; // utilizado para atualizar o ponteiro do frame dentro da imagem
     float current_frame_dragon_b = 128; // utilizado para atualizar o ponteiro do frame dentro da imagem
     int dragon_r_x = 235, dragon_r_y = 188, dragon_b_x = 275, dragon_b_y = 78; // posição na tela dos dragoes
+
+  ///// Variveis do retangulo no Menu_Char /////
+    int x1 = 59;  //inicio do ponteiro x na tela
+    int y1 = 219; // inicio do ponteiro y na tela
+    int x2 = 197; //termino do ponteiro x na tela
+    int y2 = 357; // termino do ponteiro y na tela
+    int thickness = 5; //largura da linha
 
   ///// Tela inicial /////
   while (true) { 
@@ -92,7 +101,41 @@ int main() {
         al_draw_scaled_bitmap(knight[k],sx,sy,sw,sh,dx,dy,dw,dh,0);
         k ++;
       }
-    if (event.type == ALLEGRO_EVENT_KEY_DOWN || event.keyboard.keycode == ALLEGRO_KEY_ESCAPE) {
+    al_draw_rectangle(x1, y1, x2, y2, al_map_rgb(255, 255, 255), thickness);
+    if (event.type == ALLEGRO_EVENT_KEY_DOWN ) {
+      switch (event.keyboard.keycode){
+        case ALLEGRO_KEY_W:
+        if(y1 == 411 && y2 == 549){
+        y1  -= 192;
+        y2  -= 192;
+        persona -=3;
+        }
+        break;
+        case ALLEGRO_KEY_A:
+        if(x1 > 59 && x2 > 197 ){ 
+        x1  -= 192;
+        x2  -= 192;
+        persona --;
+        }
+        break;
+        case ALLEGRO_KEY_S:
+        if(y1 == 219 && y2 == 357){
+        y1  += 192;
+        y2  += 192;
+        persona += 3;
+        }
+        break;
+        case ALLEGRO_KEY_D:
+        if( x1 < 443 && x2 < 581){
+        x1  += 192;
+        x2  += 192;
+        persona ++;
+        }
+        break;       
+      }
+    }
+
+    if ( event.keyboard.keycode == ALLEGRO_KEY_ESCAPE || event.keyboard.keycode == ALLEGRO_KEY_ENTER) {
       break;
     }
     al_flip_display();
@@ -190,21 +233,15 @@ int main() {
     ////////////////////////EXIBIR informações na tela//////////////////////////////////////////////
     char xkposicao[50];
     char ykposicao[50];
-    char xmposicao[50];
-    char ymposicao[50];
-    char mapp[50];
+
 
     sprintf(xkposicao, "xknight: é %d", xknight);
     sprintf(ykposicao, "yknight: é %d", yknight);
-    sprintf(xmposicao, "xmapa: é %d", xmapa);
-    sprintf(ymposicao, "ymapa: é %d", ymapa);
-    sprintf(mapp, "mapa: é %d", map);
+
 
     al_draw_text(font, al_map_rgb(255, 255, 255), 0, 10, 0, xkposicao);
     al_draw_text(font, al_map_rgb(255, 255, 255), 0, 20, 0, ykposicao);
-    al_draw_text(font, al_map_rgb(255, 255, 255), 0, 30, 0, xmposicao);
-    al_draw_text(font, al_map_rgb(255, 255, 255), 0, 40, 0, ymposicao);
-    al_draw_text(font, al_map_rgb(255, 255, 255), 0, 50, 0, mapp);
+
     al_flip_display();
     
   }
