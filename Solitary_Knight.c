@@ -44,7 +44,7 @@ int main() {
     al_start_timer(timer);
   
   ///// Variaveis cavaleiro /////
-    int persona = 0; // knight jogado
+    int persona = 0; // knight jogado(skin)
     int xknight = 160, yknight = 608; //posição inicial do cavaleiro
     int tamanho_xk = 32, tamanho_yk = 32; //tamanho do sprite
     int deslocamento = 32; // velocidade/pixel 
@@ -70,77 +70,80 @@ int main() {
     int thickness = 5; //largura da linha
 
   ///// Tela inicial /////
-  while (true) { 
-    ALLEGRO_EVENT event;
-    al_wait_for_event(event_queue, &event);
-    al_draw_bitmap(menu_inicial, 0, 0, 0);
-    al_draw_text(font, al_map_rgb(0, 0, 0), 170, 630,0, "Pressione qualquer tecla para começar");
-    if (event.type == ALLEGRO_EVENT_KEY_DOWN || event.keyboard.keycode == ALLEGRO_KEY_ESCAPE) {
-      break;
-    }
-    al_flip_display();
-  }
-  al_destroy_bitmap(menu_inicial);
-
-  ///// Escolha char /////
-  while (true) { 
-    ALLEGRO_EVENT event;
-    al_wait_for_event(event_queue, &event);
-    al_draw_bitmap(menu_char, 0, 0, 0);
-    float sx = 32; // inicio do ponteiro x dentro da imagem
-    float sy = 0; // inicio do ponteiro y dentro da imagem
-    float sw = 32; //qntd de pixels de largura inicial
-    float sh = 32; //qntd de pixels de altura inicial
-    float dw = 128; // qntd de pixels de largura final
-    float dh = 128; // qntd de pixels de altura final
-    int k = 0;
-    for (int j = 0; j<2; j++)
-      for (int i = 0; i < 3; i++) {
-        float dx = 64 + i * 192; //inicio do ponteiro x na tela
-        float dy = 224 + j * 192 ; // inicio do ponteiro y na tela
-        al_draw_scaled_bitmap(knight[k],sx,sy,sw,sh,dx,dy,dw,dh,0);
-        k ++;
+    while (true) { 
+      ALLEGRO_EVENT event;
+      al_wait_for_event(event_queue, &event);
+      al_draw_bitmap(menu_inicial, 0, 0, 0);
+      al_draw_text(font, al_map_rgb(0, 0, 0), 170, 630,0, "Pressione qualquer tecla para começar");
+      if (event.type == ALLEGRO_EVENT_KEY_DOWN || event.keyboard.keycode == ALLEGRO_KEY_ESCAPE) {
+        break;
       }
-    al_draw_rectangle(x1, y1, x2, y2, al_map_rgb(255, 255, 255), thickness);
-    if (event.type == ALLEGRO_EVENT_KEY_DOWN ) {
-      switch (event.keyboard.keycode){
-        case ALLEGRO_KEY_W:
-        if(y1 == 411 && y2 == 549){
-        y1  -= 192;
-        y2  -= 192;
-        persona -=3;
-        }
-        break;
-        case ALLEGRO_KEY_A:
-        if(x1 > 59 && x2 > 197 ){ 
-        x1  -= 192;
-        x2  -= 192;
-        persona --;
-        }
-        break;
-        case ALLEGRO_KEY_S:
-        if(y1 == 219 && y2 == 357){
-        y1  += 192;
-        y2  += 192;
-        persona += 3;
-        }
-        break;
-        case ALLEGRO_KEY_D:
-        if( x1 < 443 && x2 < 581){
-        x1  += 192;
-        x2  += 192;
-        persona ++;
-        }
-        break;       
-      }
+      al_flip_display();
     }
+    al_destroy_bitmap(menu_inicial);
 
-    if ( event.keyboard.keycode == ALLEGRO_KEY_ESCAPE || event.keyboard.keycode == ALLEGRO_KEY_ENTER) {
-      break;
+  ///// Tela_Escolha_char /////
+    while (true) { 
+      ALLEGRO_EVENT event;
+      al_wait_for_event(event_queue, &event);
+      al_draw_bitmap(menu_char, 0, 0, 0);
+      /// variaveis para impressao redmensionada ///
+      float sx = 32; // inicio do ponteiro x dentro da imagem
+      float sy = 0; // inicio do ponteiro y dentro da imagem
+      float sw = 32; //qntd de pixels de largura inicial
+      float sh = 32; //qntd de pixels de altura inicial
+      float dw = 128; // qntd de pixels de largura final
+      float dh = 128; // qntd de pixels de altura final
+      int k = 0; // ponteiro da matriz de personagem
+      /// loop para impressao 3X2) ///
+      for (int j = 0; j<2; j++)
+        for (int i = 0; i < 3; i++) {
+          float dx = 64 + i * 192; //inicio do ponteiro x na tela
+          float dy = 224 + j * 192 ; // inicio do ponteiro y na tela
+          al_draw_scaled_bitmap(knight[k],sx,sy,sw,sh,dx,dy,dw,dh,0);
+          k ++;
+        }
+      al_draw_rectangle(x1, y1, x2, y2, al_map_rgb(255, 255, 255), thickness); //desenhar o retangulo para realçar o personagem escolhido
+      /// movimentação do retangulo, e atualização da variavel persona ///
+      if (event.type == ALLEGRO_EVENT_KEY_DOWN ) {
+        switch (event.keyboard.keycode){
+          case ALLEGRO_KEY_W:
+          if(y1 == 411 && y2 == 549){
+          y1  -= 192;
+          y2  -= 192;
+          persona -=3;
+          }
+          break;
+          case ALLEGRO_KEY_A:
+          if(x1 > 59 && x2 > 197 ){ 
+          x1  -= 192;
+          x2  -= 192;
+          persona --;
+          }
+          break;
+          case ALLEGRO_KEY_S:
+          if(y1 == 219 && y2 == 357){
+          y1  += 192;
+          y2  += 192;
+          persona += 3;
+          }
+          break;
+          case ALLEGRO_KEY_D:
+          if( x1 < 443 && x2 < 581){
+          x1  += 192;
+          x2  += 192;
+          persona ++;
+          }
+          break;       
+        }
+      }
+
+      if ( event.keyboard.keycode == ALLEGRO_KEY_ESCAPE || event.keyboard.keycode == ALLEGRO_KEY_ENTER) {
+        break;
+      }
+      al_flip_display();
     }
-    al_flip_display();
-  }
-  al_destroy_bitmap(menu_char);
+    al_destroy_bitmap(menu_char);
   ///// loop principal game /////
   while (true) {
     /////Inicialização/////
